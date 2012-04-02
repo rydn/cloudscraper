@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 (function() {
   var argLen, download, fs, http, init, page, params, parse, rootHost, scrape;
 
@@ -63,6 +64,9 @@
     if (!obj) return;
     artist = obj.user.username;
     title = obj.title;
+    try {
+      fs.mkdirSync('./sounds/' + artist);
+    } catch (e) {}
     console.log('\x1b[33m' + 'fetching: ' + title + '\x1b[0m');
     return http.get({
       host: 'media.' + rootHost,
@@ -76,7 +80,8 @@
           path: res.headers.location.substr(('http://' + host).length)
         }, function(res) {
           var file;
-          file = fs.createWriteStream('./' + artist + ' - ' + title + '.mp3');
+
+          file = fs.createWriteStream('./sounds/' + artist + '/' + artist + ' - ' + title + '.mp3');
           res.on('data', function(chunk) {
             return file.write(chunk);
           });
